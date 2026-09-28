@@ -13,15 +13,25 @@ import { Loan } from './models';
   template: `
     <h1>Emprunts</h1>
     <p>
-      {{ stats().active }} emprunts en cours, dont {{ stats().late }} en retard ({{ stats().lateRate }} %),
-      {{ stats().returned }} rendus
+      {{ stats().active }} emprunts en cours, dont {{ stats().late }} en retard ({{
+        stats().lateRate
+      }}
+      %), {{ stats().returned }} rendus
     </p>
     <table>
-      <tr><th>Livre</th><th>Adhérent</th><th>Emprunté le</th><th>À rendre le</th><th></th></tr>
+      <tr>
+        <th>Livre</th>
+        <th>Adhérent</th>
+        <th>Emprunté le</th>
+        <th>À rendre le</th>
+        <th></th>
+      </tr>
       @for (loan of loans(); track loan.id) {
         <tr>
           <td>{{ titles().get(loan.bookId) }}</td>
-          <td><a [routerLink]="['/adherents', loan.memberId]">{{ loan.memberId }}</a></td>
+          <td>
+            <a [routerLink]="['/adherents', loan.memberId]">{{ loan.memberId }}</a>
+          </td>
           <td>{{ loan.from | date }}</td>
           <td>{{ loan.due | date }}</td>
           <td>
@@ -40,12 +50,13 @@ import { Loan } from './models';
 export class LoanListPage {
   private readonly api = inject(LoanApi);
   private readonly statsService = inject(LoanStats);
-//   private readonly bookApi= inject(BookApi);
+  //   private readonly bookApi= inject(BookApi);
+  private readonly ping = inject(LoanApi).ping(); // pour tester le cas "Promise" du décorateur
 
   protected readonly loans = toSignal(this.api.getAll(), { initialValue: [] });
   private readonly books = toSignal(inject(BookApi).getAll(), { initialValue: [] });
 
-  protected readonly titles = computed(() => new Map(this.books().map(b => [b.id, b.title]))); // [ [ '1', 'Dune'] , ['2', 'Fondation' ]]
+  protected readonly titles = computed(() => new Map(this.books().map((b) => [b.id, b.title]))); // [ [ '1', 'Dune'] , ['2', 'Fondation' ]]
   // titles.get('1') me retournera 'Dune' par exemple; => O(1)
   // ça évite de faire sans cette Map un O(N)  =>  books().find(b => b.id === loan.bookId)?.title
   protected readonly stats = computed(() => this.statsService.compute(this.loans()));

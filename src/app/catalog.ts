@@ -1,18 +1,21 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component,  inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { switchMap } from 'rxjs';
 import { BookApi } from './book-api';
 import {
-  CdkFixedSizeVirtualScroll,
-  CdkVirtualForOf,
-  CdkVirtualScrollViewport,
+//   CdkFixedSizeVirtualScroll,
+//   CdkVirtualForOf,
+//   CdkVirtualScrollViewport,
 } from '@angular/cdk/scrolling';
 import { Book } from './models';
+
+
 
 @Component({
   selector: 'app-catalog',
   imports: [RouterLink],
+  
 //   imports: [RouterLink, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf],
   template: `
     <h1>Catalogue</h1>
@@ -39,9 +42,16 @@ import { Book } from './models';
       }
     </ul>
     <!-- <cdk-virtual-scroll-viewport itemSize="32" class="viewport">
-      <div *cdkVirtualFor="let book of books(); trackBy: trackById" class="row">
-        <p>{{ book.title }}</p>
-      </div>
+        <table>
+            <thead><tr><th>Livre</th><th>Auteur</th></tr></thead>
+            <tbody>
+                <tr *cdkVirtualFor="let book of manyBooks(); trackBy: trackById" class="row">
+                  <td>{{book.title}}</td>
+                  <td>{{book.authorId}}</td>
+                </tr>
+
+            </tbody>
+        </table>
     </cdk-virtual-scroll-viewport> -->
   `,
   styles: `
@@ -78,3 +88,5 @@ export class CatalogPage {
     this.genre.set(genre);
   }
 }
+
+

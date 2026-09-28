@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Loan } from './models';
+import { Measure } from './decorators/measure';
 
 @Service()
 export class LoanApi {
@@ -19,10 +20,18 @@ export class LoanApi {
   }
 
   giveBack(id: string, date = new Date()) {
-    return this.http.patch<Loan>(`/api/loans/${id}`, { returnedAt: date.toISOString().slice(0, 10) });
+    return this.http.patch<Loan>(`/api/loans/${id}`, {
+      returnedAt: date.toISOString().slice(0, 10),
+    });
   }
 
   cancel(id: string) {
     return this.http.delete<void>(`/api/loans/${id}`);
+  }
+
+  @Measure('ping')
+  async ping(): Promise<number> {
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    return Date.now();
   }
 }

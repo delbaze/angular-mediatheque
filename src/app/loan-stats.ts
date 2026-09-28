@@ -1,11 +1,13 @@
 import { Service } from '@angular/core';
 import { Loan, LoanStatsSummary } from './models';
+import { Measure } from './decorators/measure';
 
 @Service()
 export class LoanStats {
+  @Measure('stats')
   compute(loans: Loan[], now = new Date()): LoanStatsSummary {
-    const active = loans.filter(l => l.returnedAt === null);
-    const late = active.filter(l => new Date(l.due) < now);
+    const active = loans.filter((l) => l.returnedAt === null);
+    const late = active.filter((l) => new Date(l.due) < now);
     return {
       total: loans.length, // nb total emprunt
       active: active.length, // nb d'emprunts actuellement en cours
