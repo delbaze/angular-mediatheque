@@ -1,22 +1,20 @@
-import { Component,  inject, signal } from '@angular/core';
+import { Component, computed, inject, signal, untracked } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { switchMap } from 'rxjs';
 import { BookApi } from './book-api';
-import {
-//   CdkFixedSizeVirtualScroll,
+import {} from //   CdkFixedSizeVirtualScroll,
 //   CdkVirtualForOf,
 //   CdkVirtualScrollViewport,
-} from '@angular/cdk/scrolling';
+'@angular/cdk/scrolling';
 import { Book } from './models';
-
-
+import { Debounce } from './decorators/debounce';
 
 @Component({
   selector: 'app-catalog',
   imports: [RouterLink],
-  
-//   imports: [RouterLink, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf],
+
+  //   imports: [RouterLink, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf],
   template: `
     <h1>Catalogue</h1>
     <label>
@@ -28,9 +26,18 @@ import { Book } from './models';
         <option value="policier">Policier</option>
       </select>
     </label>
+    <label>
+      Recherche
+      <input
+        type="search"
+        (input)="search($any($event.target).value)"
+        placeholder="Rechercher un titre"
+      />
+    </label>
+
     <ul>
-      @for (book of books(); track book.id) {
-      <!-- @for (book of manyBooks(); track book.id) { -->
+      @for (book of visibleBooks(); track book.id) {
+        <!-- @for (book of manyBooks(); track book.id) { -->
         <li>
           <a [routerLink]="['/livres', book.id]">{{ book.title }}</a> ({{ book.year }})
           @if (book.available === 0) {
@@ -68,6 +75,7 @@ import { Book } from './models';
 export class CatalogPage {
   private readonly api = inject(BookApi);
   protected readonly genre = signal('');
+  protected readonly query = signal('');
   protected readonly trackById = (_: number, book: Book) => book.id;
 
   protected readonly books = toSignal(
@@ -76,17 +84,25 @@ export class CatalogPage {
     { initialValue: [] },
   );
 
-//   // pour mon test
-//   protected readonly manyBooks = computed(() =>
-//     Array.from({ length: 10_000 }, (_, i) => ({
-//       ...this.books()[i % this.books().length],
-//       id: String(i),
-//     })),
-//   );
+  protected readonly visibleBooks = computed(() => {
+    const q =  this.query().trim().toLowerCase(); // this.query est lu mais pas traqué
+    // const q = untracked(() => this.query().trim().toLowerCase()); // this.query est lu mais pas traqué
+    return this.books().filter((book) => book.title.toLowerCase().includes(q));
+  });
 
+  //   // pour mon test
+  //   protected readonly manyBooks = computed(() =>
+  //     Array.from({ length: 10_000 }, (_, i) => ({
+  //       ...this.books()[i % this.books().length],
+  //       id: String(i),
+  //     })),
+  //   );
+
+  @Debounce(300)
+  search(value: string) {
+    this.query.set(value);
+  }
   selectGenre(genre: string) {
     this.genre.set(genre);
   }
 }
-
-
