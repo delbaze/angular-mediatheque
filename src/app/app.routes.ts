@@ -18,14 +18,9 @@ export const routes: Routes = [
     path: 'dashboard',
     component: DashboardPage,
     providers: [
-      provideWidget({ id: 'new-books', title: 'Nouveautés', order: 1, component: NewBooksWidget }),
-      provideWidget({ id: 'late-loans', title: 'Retards', order: 2, component: LateLoansWidget }),
-      provideWidget({
-        id: 'today-loans',
-        title: 'Emprunt du jour',
-        order: 3,
-        component: TodayLoansWidget,
-      }),
+    provideWidget({ id: 'new-books', title: 'Nouveautés', order: 1, component: NewBooksWidget }),
+    provideWidget({ id: 'late-loans', title: 'Retards', order: 2, roles: ['librarian'], component: LateLoansWidget }),
+    provideWidget({ id: 'today-loans', title: 'Emprunts du jour', order: 3, roles: ['librarian'], component: TodayLoansWidget }),
     ],
   },
   {

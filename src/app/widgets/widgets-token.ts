@@ -1,10 +1,12 @@
 // src/app/widgets/widgets-token.ts
 import { InjectionToken, Provider, Type } from '@angular/core';
+export type Role = 'reader' | 'librarian';
 
 export interface WidgetDef {
   id: string;
   title: string;
   order?: number;
+  roles?: Role[];
   component: Type<unknown>;
 }
 
