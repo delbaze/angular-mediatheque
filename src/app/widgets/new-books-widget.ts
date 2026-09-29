@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { BookApi } from '../book-api';
 import { Widget } from './widget-registry';
 
-@Widget({ id: 'new-books', title: 'Nouveautés', order: 1 })
+// @Widget({ id: 'new-books', title: 'Nouveautés', order: 1 })
 @Component({
   selector: 'app-new-books-widget',
   imports: [RouterLink],

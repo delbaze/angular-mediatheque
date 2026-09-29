@@ -1,9 +1,13 @@
 import { Type } from '@angular/core';
 
+export type Role = 'reader' | 'librarian';
+
 export interface WidgetMeta {
   id: string;
   title: string;
   order?: number;
+  /** Rôles autorisés. Si absent : widget visible par tous */
+  roles?: Role[];
 }
 
 export interface WidgetEntry {
@@ -23,6 +27,9 @@ export function Widget(meta: WidgetMeta) {
   };
 }
 
+export function widgetsFor(role: Role): WidgetEntry[] {
+  return registeredWidgets().filter((w) => !w.meta.roles || w.meta.roles.includes(role));
+}
 export function registeredWidgets(): WidgetEntry[] {
   return [...registry.values()].sort((a, b) => (a.meta.order ?? 99) - (b.meta.order ?? 99));
 }
