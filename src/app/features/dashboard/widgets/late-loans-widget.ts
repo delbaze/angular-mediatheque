@@ -1,8 +1,8 @@
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { LoanApi } from '../loan-api';
-import { LoanStats } from '../loan-stats';
-import { Widget } from './widget-registry';
+import { LoanApi } from '../../../loan-api';
+import { LoanStats } from '../../../loan-stats';
+import { Widget } from '../../../core/widgets/widget-registry';
 
 @Widget({ id: 'late-loans', title: 'Retards', order: 2, roles: ['librarian'] })
 @Component({

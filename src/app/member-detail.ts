@@ -3,8 +3,8 @@ import { httpResource } from '@angular/common/http';
 import { Component, inject, input, signal } from '@angular/core';
 import { form, FormField, required,  } from '@angular/forms/signals';
 import { LoanApi } from './loan-api';
-import { Loan, Member } from './models';
-import { Throttle } from './decorators/throttle';
+import { Loan, Member } from './domain/books/models';
+import { Throttle } from './core/decorators/throttle';
 
 @Component({
   selector: 'app-member-detail',

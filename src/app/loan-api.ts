@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
-import { Loan } from './models';
-import { Measure } from './decorators/measure';
+import { Loan } from './domain/books/models';
+import { Measure } from './core/decorators/measure';
 
 @Service()
 export class LoanApi {

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { Author, Book } from './models';
-import { Log } from './decorators/log';
+import { Log } from '../../core/decorators/log';
 
 @Service() // approche moderne pour du singleton root
 // @Injectable({providedIn: 'root'})

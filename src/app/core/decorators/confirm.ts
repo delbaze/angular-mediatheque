@@ -1,4 +1,4 @@
-import { ConfirmService } from "../confirm-service";
+import { ConfirmService } from "../../confirm-service";
 import { decoratorInject } from "./decorator-injector";
 
 

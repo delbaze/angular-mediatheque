@@ -2,12 +2,12 @@ import { DatePipe } from '@angular/common';
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { BookApi } from './book-api';
+import { BookApi } from './domain/books/book-api';
 import { LoanApi } from './loan-api';
 import { LoanStats } from './loan-stats';
-import { Loan } from './models';
-import { Confirm } from './decorators/confirm';
-import { ConfirmAsync } from './decorators/confirm-async';
+import { Loan } from './domain/books/models';
+import { Confirm } from './core/decorators/confirm';
+import { ConfirmAsync } from './core/decorators/confirm-async';
 
 @Component({
   selector: 'app-loan-list',

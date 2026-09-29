@@ -1,8 +1,8 @@
 import { Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { BookApi } from '../book-api';
-import { Widget } from './widget-registry';
+import { BookApi } from '../../../domain/books/book-api';
+import { Widget } from '../../../core/widgets/widget-registry';
 
 // @Widget({ id: 'new-books', title: 'Nouveautés', order: 1 })
 @Component({

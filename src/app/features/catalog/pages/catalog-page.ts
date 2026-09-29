@@ -2,17 +2,19 @@ import { Component, computed, inject, signal, untracked } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { switchMap } from 'rxjs';
-import { BookApi } from './domain/books/book-api';
+import { BookApi } from '@domain/books/book-api';
 import {} from //   CdkFixedSizeVirtualScroll,
 //   CdkVirtualForOf,
 //   CdkVirtualScrollViewport,
 '@angular/cdk/scrolling';
-import { Book } from './domain/books/models';
-import { Debounce } from './core/decorators/debounce';
+import { Book } from '@domain/books/models';
+import { Debounce } from '@core/decorators/debounce';
+import { BookCard } from '../ui/book-card';
+import { persistedSignal } from '../../../shared/util/persisted-signal';
 
 @Component({
   selector: 'app-catalog',
-  imports: [RouterLink],
+  imports: [RouterLink, BookCard],
 
   //   imports: [RouterLink, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf],
   template: `
@@ -35,19 +37,16 @@ import { Debounce } from './core/decorators/debounce';
       />
     </label>
 
-    <ul>
-      @for (book of visibleBooks(); track book.id) {
-        <!-- @for (book of manyBooks(); track book.id) { -->
-        <li>
-          <a [routerLink]="['/livres', book.id]">{{ book.title }}</a> ({{ book.year }})
-          @if (book.available === 0) {
-            <strong>indisponible</strong>
-          }
-        </li>
-      } @empty {
-        <li>Aucun livre.</li>
-      }
-    </ul>
+    @for (book of visibleBooks(); track book.id) {
+      <!-- @for (book of manyBooks(); track book.id) { -->
+      <app-book-card
+        [book]="book"
+        [favorite]="favorites().includes(book.id)"
+        (addFavorite)="addFavorite($event)"
+      />
+    } @empty {
+      <li>Aucun livre.</li>
+    }
     <!-- <cdk-virtual-scroll-viewport itemSize="32" class="viewport">
         <table>
             <thead><tr><th>Livre</th><th>Auteur</th></tr></thead>
@@ -77,6 +76,7 @@ export class CatalogPage {
   protected readonly genre = signal('');
   protected readonly query = signal('');
   protected readonly trackById = (_: number, book: Book) => book.id;
+  protected readonly favorites = persistedSignal<string[]>('catalog.favorites', []);
 
   protected readonly books = toSignal(
     // re transforme le flux RxJS en un signal books pour pouvoir le lire facilement dans le template avec books()
@@ -85,7 +85,7 @@ export class CatalogPage {
   );
 
   protected readonly visibleBooks = computed(() => {
-    const q =  this.query().trim().toLowerCase(); // this.query est lu mais pas traqué
+    const q = this.query().trim().toLowerCase(); // this.query est lu mais pas traqué
     // const q = untracked(() => this.query().trim().toLowerCase()); // this.query est lu mais pas traqué
     return this.books().filter((book) => book.title.toLowerCase().includes(q));
   });
@@ -104,5 +104,9 @@ export class CatalogPage {
   }
   selectGenre(genre: string) {
     this.genre.set(genre);
+  }
+
+  addFavorite(id: string) {
+    this.favorites.update((ids) => [...ids, id]);
   }
 }

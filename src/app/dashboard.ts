@@ -1,8 +1,8 @@
 import { NgComponentOutlet } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
-import { registeredWidgets, Role, widgetsFor } from './widgets/widget-registry';
-import './widgets/widgets';
-import { WIDGETS } from './widgets/widgets-token';
+import { registeredWidgets, Role, widgetsFor } from './core/widgets/widget-registry';
+import './features/dashboard/widgets/widgets';
+import { WIDGETS } from './core/widgets/widgets-token';
 
 @Component({
   selector: 'app-dashboard',

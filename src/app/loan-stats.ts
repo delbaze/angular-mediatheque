@@ -1,6 +1,6 @@
 import { Service } from '@angular/core';
-import { Loan, LoanStatsSummary } from './models';
-import { Measure } from './decorators/measure';
+import { Loan, LoanStatsSummary } from './domain/books/models';
+import { Measure } from './core/decorators/measure';
 
 @Service()
 export class LoanStats {

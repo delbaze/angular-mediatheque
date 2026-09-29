@@ -1,6 +1,6 @@
 import { httpResource } from '@angular/common/http';
 import { Component, input } from '@angular/core';
-import { Author, Book } from './models';
+import { Author, Book } from './domain/books/models';
 
 @Component({
   selector: 'app-book-detail',

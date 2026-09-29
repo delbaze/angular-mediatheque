@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
-import { Member } from './models';
+import { Member } from './domain/books/models';
 
 @Service()
 export class MemberApi {

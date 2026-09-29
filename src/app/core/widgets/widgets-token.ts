@@ -1,5 +1,6 @@
 // src/app/widgets/widgets-token.ts
 import { InjectionToken, Provider, Type } from '@angular/core';
+
 export type Role = 'reader' | 'librarian';
 
 export interface WidgetDef {

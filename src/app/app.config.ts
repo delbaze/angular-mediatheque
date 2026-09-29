@@ -2,7 +2,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
-import { provideDecoratorInjector } from './decorators/decorator-injector';
+import { provideDecoratorInjector } from './core/decorators/decorator-injector';
 
 export const appConfig: ApplicationConfig = {
   providers: [
