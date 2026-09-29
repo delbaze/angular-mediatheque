@@ -1,44 +1,44 @@
 import { Routes } from '@angular/router';
-import { BookDetailPage } from './book-detail';
-import { CatalogPage } from './catalog';
-// import { LoanListPage } from './loan-list';
-import { MemberDetailPage } from './member-detail';
-import { DashboardPage } from './dashboard';
-import { provideWidget } from './core/widgets/widgets-token';
-import { NewBooksWidget } from './features/dashboard/widgets/new-books-widget';
-import { LateLoansWidget } from './features/dashboard/widgets/late-loans-widget';
-import { TodayLoansWidget } from './features/dashboard/widgets/today-loans-widget';
+import { provideWidget } from '@core/widgets/widgets-token';
+import { LateLoansWidget } from '@features/dashboard/widgets/late-loans-widget';
+import { NewBooksWidget } from '@features/dashboard/widgets/new-books-widget';
+// import { TodayLoansWidget } from '@features/dashboard/widgets/today-loans-widget';
 
 export const routes: Routes = [
-  { path: 'livres/:id', component: BookDetailPage },
-  { path: 'emprunts', loadComponent: () => import('./loan-list').then((m) => m.LoanListPage) },
-  // { path: 'emprunts', component: LoanListPage },
-  { path: 'adherents/:id', component: MemberDetailPage },
+  { path: 'emprunts', loadComponent: () => import('@features/loans/pages/loan-list-page') },
+  {
+    path: 'adherents/:id',
+    loadComponent: () => import('@features/loans/pages/member-detail-page'),
+  },
   {
     path: 'dashboard',
-    component: DashboardPage,
+    loadComponent: () => import('@features/dashboard/pages/dashboard-page'),
     providers: [
-      provideWidget({ id: 'new-books', title: 'Nouveautés', order: 1, component: NewBooksWidget }),
+      provideWidget({
+        id: 'new-books',
+        title: 'Nouveautés',
+        order: 1,
+        loadComponent: () =>
+          import('@features/dashboard/widgets/new-books-widget').then((m) => m.NewBooksWidget),
+      }),
       provideWidget({
         id: 'late-loans',
         title: 'Retards',
         order: 2,
         roles: ['librarian'],
-        component: LateLoansWidget,
+        loadComponent: () =>
+          import('@features/dashboard/widgets/late-loans-widget').then((m) => m.LateLoansWidget),
       }),
       provideWidget({
         id: 'today-loans',
         title: 'Emprunts du jour',
         order: 3,
         roles: ['librarian'],
-        component: TodayLoansWidget,
+        loadComponent: () =>
+          import('@features/dashboard/widgets/today-loans-widget').then((m) => m.TodayLoansWidget),
       }),
     ],
   },
   { path: '', loadChildren: () => import('@features/catalog/catalog.routes') },
-
-  {
-    path: '**',
-    redirectTo: '',
-  },
+  { path: '**', redirectTo: '' },
 ];

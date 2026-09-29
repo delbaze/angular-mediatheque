@@ -14,7 +14,7 @@ import { persistedSignal } from '../../../shared/util/persisted-signal';
 
 @Component({
   selector: 'app-catalog',
-  imports: [RouterLink, BookCard],
+  imports: [BookCard],
 
   //   imports: [RouterLink, CdkVirtualScrollViewport, CdkFixedSizeVirtualScroll, CdkVirtualForOf],
   template: `
@@ -71,7 +71,7 @@ import { persistedSignal } from '../../../shared/util/persisted-signal';
     }
   `,
 })
-export class CatalogPage {
+export default class CatalogPage {
   private readonly api = inject(BookApi);
   protected readonly genre = signal('');
   protected readonly query = signal('');

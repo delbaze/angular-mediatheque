@@ -1,6 +1,6 @@
 import { httpResource } from '@angular/common/http';
 import { Component, input } from '@angular/core';
-import { Author, Book } from './domain/books/models';
+import { Author, Book } from '../../../domain/books/models';
 
 @Component({
   selector: 'app-book-detail',
@@ -17,7 +17,7 @@ import { Author, Book } from './domain/books/models';
     }
   `,
 })
-export class BookDetailPage {
+export default class BookDetailPage {
   readonly id = input.required<string>();
 
   protected readonly book = httpResource<Book>(() => `/api/books/${this.id()}`);

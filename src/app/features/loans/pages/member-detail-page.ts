@@ -1,10 +1,11 @@
 import { DatePipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
 import { Component, inject, input, signal } from '@angular/core';
-import { form, FormField, required,  } from '@angular/forms/signals';
-import { LoanApi } from './loan-api';
-import { Loan, Member } from './domain/books/models';
-import { Throttle } from './core/decorators/throttle';
+import { form, FormField, required } from '@angular/forms/signals';
+import { LoanApi } from '@domain/loans/loan-api';
+import { Member } from '@domain/members/models';
+import { Loan } from '@domain/loans/models';
+import { Throttle } from '@core/decorators/throttle';
 
 @Component({
   selector: 'app-member-detail',
@@ -44,7 +45,7 @@ import { Throttle } from './core/decorators/throttle';
     }
   `,
 })
-export class MemberDetailPage {
+export default class MemberDetailPage {
   private readonly api = inject(LoanApi);
 
   readonly id = input.required<string>();
@@ -56,7 +57,7 @@ export class MemberDetailPage {
   protected readonly message = signal('');
 
   private readonly model = signal({ bookId: '' });
-  protected readonly borrowForm = form(this.model, f => {
+  protected readonly borrowForm = form(this.model, (f) => {
     required(f.bookId, { message: 'Le numéro du livre est obligatoire' });
   });
 

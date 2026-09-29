@@ -1,14 +1,14 @@
 // src/app/widgets/widgets-token.ts
 import { InjectionToken, Provider, Type } from '@angular/core';
-
-export type Role = 'reader' | 'librarian';
+import { Role } from '@core/auth/role';
 
 export interface WidgetDef {
   id: string;
   title: string;
   order?: number;
   roles?: Role[];
-  component: Type<unknown>;
+  component?: Type<unknown>; /// composant chargé avec la page (donc pas lazy)
+  loadComponent?: () => Promise<Type<unknown>>; // chargé à la demande, lazy
 }
 
 /** Widgets du tableau de bord. Chaque fournisseur en ajoute un à la liste. */

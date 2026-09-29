@@ -1,6 +1,6 @@
 import { Type } from '@angular/core';
+import { Role } from '@core/auth/role';
 
-export type Role = 'reader' | 'librarian';
 
 export interface WidgetMeta {
   id: string;
