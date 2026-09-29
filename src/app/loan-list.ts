@@ -6,6 +6,8 @@ import { BookApi } from './book-api';
 import { LoanApi } from './loan-api';
 import { LoanStats } from './loan-stats';
 import { Loan } from './models';
+import { Confirm } from './decorators/confirm';
+import { ConfirmAsync } from './decorators/confirm-async';
 
 @Component({
   selector: 'app-loan-list',
@@ -61,10 +63,15 @@ export class LoanListPage {
   // ça évite de faire sans cette Map un O(N)  =>  books().find(b => b.id === loan.bookId)?.title
   protected readonly stats = computed(() => this.statsService.compute(this.loans()));
 
+  @ConfirmAsync(
+    (loan: Loan) =>
+      `Enregistrer le retour de l'emprunt du ${new Date(loan.from).toLocaleDateString('fr-FR')} ?`,
+  )
   giveBack(loan: Loan) {
     this.api.giveBack(loan.id!).subscribe(() => location.reload()); // dette technique volontaire!
   }
 
+  @Confirm('Annuler definitivement cet emprunt?')
   cancel(id: string) {
     this.api.cancel(id).subscribe(() => location.reload());
   }

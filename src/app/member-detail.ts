@@ -4,6 +4,7 @@ import { Component, inject, input, signal } from '@angular/core';
 import { form, FormField, required,  } from '@angular/forms/signals';
 import { LoanApi } from './loan-api';
 import { Loan, Member } from './models';
+import { Throttle } from './decorators/throttle';
 
 @Component({
   selector: 'app-member-detail',
@@ -64,6 +65,7 @@ export class MemberDetailPage {
     this.borrow();
   }
 
+  @Throttle(500)
   borrow() {
     const from = new Date();
     const due = new Date(from);

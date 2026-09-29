@@ -2,6 +2,7 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
+import { provideDecoratorInjector } from './decorators/decorator-injector';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -15,6 +16,7 @@ export const appConfig: ApplicationConfig = {
     // sans ça vous feriez : 
     // private readonly route = inject(ActivatedRoute);
     // readonly id = toSignal(this.route.paramMap.pipe(map(p => p.get('id)!)), { requireSync: true})
-    provideHttpClient()
+    provideHttpClient(),
+    provideDecoratorInjector()
   ]
 };

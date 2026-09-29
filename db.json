@@ -171,14 +171,6 @@
       "returnedAt": null
     },
     {
-      "id": "3",
-      "bookId": "3",
-      "memberId": "A003",
-      "from": "2026-07-01",
-      "due": "2026-07-22",
-      "returnedAt": "2026-07-20"
-    },
-    {
       "id": "4",
       "bookId": "6",
       "memberId": "A004",
@@ -201,6 +193,30 @@
       "from": "2026-08-01",
       "due": "2026-08-22",
       "returnedAt": null
+    },
+    {
+      "bookId": "test 1",
+      "memberId": "A003",
+      "from": "2026-09-29",
+      "due": "2026-10-20",
+      "returnedAt": null,
+      "id": "gP9jd9mGwKY"
+    },
+    {
+      "bookId": "test 2",
+      "memberId": "A003",
+      "from": "2026-09-29",
+      "due": "2026-10-20",
+      "returnedAt": null,
+      "id": "G3GlmYKrwj4"
+    },
+    {
+      "bookId": "test 3",
+      "memberId": "A003",
+      "from": "2026-09-29",
+      "due": "2026-10-20",
+      "returnedAt": null,
+      "id": "5Clif6xDRFg"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
