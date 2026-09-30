@@ -1,15 +1,16 @@
 import { httpResource } from '@angular/common/http';
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { Author, Book } from '../../../domain/books/models';
 import { BookApi, BookHttpApi } from '@domain/books/book-api';
 import { Panel } from '@shared/ui/panel';
 import { BookSheetButton } from '../ui/book-sheet-button';
+import { rxResource } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-book-detail',
   template: `
-    @if (book.hasValue()) {
-      @let b = book.value();
+    <!-- @if (book.hasValue()) { -->
+      @let b = book();
       <h1>{{ b.title }}</h1>
       <p>{{ author.value()?.name }}, {{ b.year }}</p>
       <p>{{ b.available }} exemplaire(s) disponible(s) sur {{ b.copies }}</p>
@@ -30,19 +31,26 @@ import { BookSheetButton } from '../ui/book-sheet-button';
       } @placeholder {
         <p>Cliquez ici pour le voir</p>
       }
-    } @else if (book.isLoading()) {
+    <!-- } -->
+    <!-- @else if (book.isLoading()) {
       <p>Chargement...</p>
     } @else if (book.error()) {
       <p>Livre introuvable.</p>
-    }
+    } -->
   `,
   imports: [Panel, BookSheetButton],
 })
 export default class BookDetailPage {
   readonly id = input.required<string>();
+  private readonly api = inject(BookApi);
 
-  protected readonly book = httpResource<Book>(() => `/api/books/${this.id()}`);
-  protected readonly author = httpResource<Author>(() =>
-    this.book.hasValue() ? `/api/authors/${this.book.value().authorId}` : undefined,
-  );
+  // protected readonly book = httpResource<Book>(() => `/api/books/${this.id()}`);
+  readonly book = input.required<Book>();
+  protected readonly author = rxResource({
+    params: () => this.book().authorId, // return implicte
+    stream: ({ params: authorId }) => this.api.getAuthor(authorId),
+  });
+  // protected readonly author = httpResource<Author>(() =>
+  //   this.book.hasValue() ? `/api/authors/${this.book.value().authorId}` : undefined,
+  // );
 }

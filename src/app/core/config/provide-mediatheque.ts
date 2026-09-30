@@ -4,12 +4,14 @@ import { API_BASE_URL } from '../../config/api-base-url';
 import { BOOK_BADGES, lastCopy, newRelease, readersFavorite } from '@domain/books/books-badges';
 import { LOAN_RULES, maxLoans, noLateLoan, notTwice } from '@domain/loans/loan-rules';
 import { Member } from '@domain/members/models';
+import { FEATURES } from './features';
 
 export interface MediathequeConfig {
   apiBaseUrl?: string;
   newReleaseDays?: number;
   /** Plafond d'emprunts en cours par catégorie d'adhérent */
   maxLoans?: Record<Member['category'], number>;
+  features?: string[];
 }
 
 export function provideMediatheque(config: MediathequeConfig = {}): EnvironmentProviders {
@@ -26,5 +28,9 @@ export function provideMediatheque(config: MediathequeConfig = {}): EnvironmentP
       useValue: maxLoans(config.maxLoans ?? { adulte: 5, jeune: 3 }),
       multi: true,
     },
+    {
+        provide: FEATURES,
+        useValue: config.features ?? [],
+    }
   ]);
 }

@@ -1,17 +1,23 @@
 import { Routes } from '@angular/router';
+import { featureGuard } from '@core/config/features';
 import { provideWidget } from '@core/widgets/widgets-token';
 import { LateLoansWidget } from '@features/dashboard/widgets/late-loans-widget';
 import { NewBooksWidget } from '@features/dashboard/widgets/new-books-widget';
 // import { TodayLoansWidget } from '@features/dashboard/widgets/today-loans-widget';
 
 export const routes: Routes = [
-  { path: 'emprunts', loadComponent: () => import('@features/loans/pages/loan-list-page') },
+  {
+    path: 'emprunts',
+    loadComponent: () => import('@features/loans/pages/loan-list-page'),
+    data: { preload: true },
+  },
   {
     path: 'adherents/:id',
     loadComponent: () => import('@features/loans/pages/member-detail-page'),
   },
   {
     path: 'dashboard',
+    canMatch: [featureGuard('dashboard')],
     loadComponent: () => import('@features/dashboard/pages/dashboard-page'),
     providers: [
       provideWidget({
@@ -39,6 +45,9 @@ export const routes: Routes = [
       }),
     ],
   },
-  { path: '', loadChildren: () => import('@features/catalog/catalog.routes') },
+  {
+    path: '',
+    loadChildren: () => import('@features/catalog/catalog.routes'),
+  },
   { path: '**', redirectTo: '' },
 ];
