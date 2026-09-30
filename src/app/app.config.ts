@@ -19,7 +19,7 @@ export const appConfig: ApplicationConfig = {
     // readonly id = toSignal(this.route.paramMap.pipe(map(p => p.get('id)!)), { requireSync: true})
     provideHttpClient(),
     provideDecoratorInjector(),
-    provideMediatheque(),
+    provideMediatheque({newReleaseDays: 30}),
     // { provide: BookApi, useClass: BookMemoryApi },
   ],
 };

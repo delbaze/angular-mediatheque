@@ -11,6 +11,14 @@ import { Book } from '../../../domain/books/models';
         <a [routerLink]="['/livres', book().id]">{{ book().title }}</a>
       </h2>
       <p>{{ book().year }}</p>
+
+      @if (badges().length > 0) {
+        <ul>
+          @for (badge of badges(); track badge) {
+            <li>{{ badge }}</li>
+          }
+        </ul>
+      }
       @if (book().available === 0) {
         <span>Indisponible</span>
       }
@@ -26,4 +34,5 @@ export class BookCard {
   readonly book = input.required<Book>();
   readonly favorite = input(false);
   readonly addFavorite = output<string>();
+  readonly badges = input.required<string[]>();
 }

@@ -11,6 +11,7 @@ import { Book } from '@domain/books/models';
 import { Debounce } from '@core/decorators/debounce';
 import { BookCard } from '../ui/book-card';
 import { persistedSignal } from '../../../shared/util/persisted-signal';
+import { BookBadges } from '@domain/books/books-badges';
 
 @Component({
   selector: 'app-catalog',
@@ -43,6 +44,7 @@ import { persistedSignal } from '../../../shared/util/persisted-signal';
         [book]="book"
         [favorite]="favorites().includes(book.id)"
         (addFavorite)="addFavorite($event)"
+        [badges]="badges.badgesFor(book)"
       />
     } @empty {
       <li>Aucun livre.</li>
@@ -77,6 +79,12 @@ export default class CatalogPage {
   protected readonly query = signal('');
   protected readonly trackById = (_: number, book: Book) => book.id;
   protected readonly favorites = persistedSignal<string[]>('catalog.favorites', []);
+
+  private readonly badges = inject(BookBadges);
+
+  protected readonly badgesById = computed(() => {
+    return new Map(this.visibleBooks().map((book) => [book.id, this.badges.badgesFor(book)]));
+  });
 
   protected readonly books = toSignal(
     // re transforme le flux RxJS en un signal books pour pouvoir le lire facilement dans le template avec books()
