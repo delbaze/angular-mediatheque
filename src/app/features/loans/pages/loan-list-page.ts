@@ -7,12 +7,19 @@ import { Loan } from "@domain/loans/models";
 import { LoanTable } from "@features/loans/ui/loan-table";
 import { LoanApi } from "../../../domain/loans/loan-api";
 import { LoanStats } from "../../../domain/loans/loan-stats";
+import { BookStore } from "@features/catalog/data/book-store";
 
 @Component({
   selector: 'app-loan-list',
   imports: [LoanTable],
   template: `
     <h1>Emprunts</h1>
+    <p>
+      Nombre de livres : {{store.count()}}
+    </p>
+    <p>
+      Le genre choisi : {{store.genre()}}
+    </p>
     <p>
       {{ stats().active }} emprunts en cours, dont {{ stats().late }} en retard
       ({{ stats().lateRate }} %), {{ stats().returned }} rendus
@@ -23,6 +30,7 @@ import { LoanStats } from "../../../domain/loans/loan-stats";
 export default class LoanListPage {
   private readonly api = inject(LoanApi);
   private readonly statsService = inject(LoanStats);
+  protected readonly store = inject(BookStore);
 
   protected readonly loans = toSignal(this.api.getAll(), { initialValue: [] });
   private readonly books = toSignal(inject(BookApi).getAll(), { initialValue: [] });
