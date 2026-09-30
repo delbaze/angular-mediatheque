@@ -44,7 +44,7 @@ import { BookBadges } from '@domain/books/books-badges';
         [book]="book"
         [favorite]="favorites().includes(book.id)"
         (addFavorite)="addFavorite($event)"
-        [badges]="badges.badgesFor(book)"
+        [badges]="badgesById().get(book.id) ?? []"
       />
     } @empty {
       <li>Aucun livre.</li>
