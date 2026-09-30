@@ -1,15 +1,22 @@
 import { DatePipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
-import { Component, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { form, FormField, required } from '@angular/forms/signals';
 import { LoanApi } from '@domain/loans/loan-api';
 import { Member } from '@domain/members/models';
 import { Loan } from '@domain/loans/models';
 import { Throttle } from '@core/decorators/throttle';
+import { API_BASE_URL } from '../../../config/api-base-url';
+import { LoanPolicy } from '@domain/loans/loan-policy';
+import { BorrowForm } from '../ui/borrow-form';
+
+export interface BorrowDraft {
+  bookId: string;
+}
 
 @Component({
   selector: 'app-member-detail',
-  imports: [DatePipe, FormField],
+  imports: [DatePipe, BorrowForm],
   template: `
     @if (member.hasValue()) {
       @let m = member.value();
@@ -31,13 +38,16 @@ import { Throttle } from '@core/decorators/throttle';
       </ul>
 
       <h2>Nouvel emprunt</h2>
-      <form (submit)="onSubmit($event)">
-        <label>Numéro du livre <input [formField]="borrowForm.bookId" /></label>
-        <button type="submit" [disabled]="borrowForm().invalid()">Emprunter</button>
-      </form>
-      @if (message()) {
-        <p>{{ message() }}</p>
+      @for (message of violations(); track message) {
+        <p>{{ message }}</p>
       }
+      <app-borrow-form
+        [disabled]="violations().length > 0"
+        (submitted)="borrow($event)"
+        /* (bookIdChange)="bookId.set($event)" */
+        [(draft)]="draft"
+
+      />
     } @else if (member.isLoading()) {
       <p>Chargement...</p>
     } @else if (member.error()) {
@@ -47,33 +57,33 @@ import { Throttle } from '@core/decorators/throttle';
 })
 export default class MemberDetailPage {
   private readonly api = inject(LoanApi);
+  private readonly policy = inject(LoanPolicy);
+  private readonly baseUrl = inject(API_BASE_URL);
+  protected readonly draft = signal<BorrowDraft>({ bookId: '' });
 
   readonly id = input.required<string>();
-  protected readonly member = httpResource<Member>(() => `/api/members/${this.id()}`);
+  protected readonly member = httpResource<Member>(() => `${this.baseUrl}/members/${this.id()}`);
   protected readonly loans = httpResource<Loan[]>(
-    () => ({ url: '/api/loans', params: { memberId: this.id() } }),
+    () => ({ url: `${this.baseUrl}/loans`, params: { memberId: this.id() } }),
     { defaultValue: [] },
   );
   protected readonly message = signal('');
+  protected readonly bookId = signal('');
 
-  private readonly model = signal({ bookId: '' });
-  protected readonly borrowForm = form(this.model, (f) => {
-    required(f.bookId, { message: 'Le numéro du livre est obligatoire' });
-  });
-
-  onSubmit(domEvent: SubmitEvent) {
-    domEvent.preventDefault();
-    this.borrow();
-  }
+  protected readonly violations = computed(() =>
+    this.member.hasValue()
+      ? this.policy.check(this.member.value(), this.bookId(), this.loans.value())
+      : [],
+  );
 
   @Throttle(500)
-  borrow() {
+  borrow(bookId: string) {
     const from = new Date();
     const due = new Date(from);
     due.setDate(due.getDate() + 21);
 
     const loan: Loan = {
-      bookId: this.model().bookId,
+      bookId,
       memberId: this.id(),
       from: from.toISOString().slice(0, 10),
       due: due.toISOString().slice(0, 10),
@@ -81,7 +91,6 @@ export default class MemberDetailPage {
     };
     this.api.borrow(loan).subscribe(() => {
       this.message.set('Emprunt enregistré.');
-      this.model.set({ bookId: '' }); // réinitialisation de l'état du formulaire
       this.loans.reload(); // réactualisation de la liste des emprunts (avec le nouvel emprunt)
     });
   }

@@ -1,6 +1,7 @@
 // src/app/features/loans/ui/borrow-form.ts
-import { Component, input, output, signal } from '@angular/core';
+import { Component, effect, input, output, signal, model } from '@angular/core';
 import { form, FormField, required } from '@angular/forms/signals';
+import { BorrowDraft } from '../pages/member-detail-page';
 
 @Component({
   selector: 'app-borrow-form',
@@ -16,15 +17,20 @@ export class BorrowForm {
   /** Désactive l'envoi, par exemple quand une règle d'emprunt est violée. */
   readonly disabled = input(false);
   readonly submitted = output<string>();
-
-  private readonly model = signal({ bookId: '' });
-  protected readonly borrowForm = form(this.model, f => {
+  readonly bookIdChange = output<string>();
+  readonly draft = model<BorrowDraft>({ bookId: '' });
+  // private readonly modelForm = signal({ bookId: '' });
+  protected readonly borrowForm = form(this.draft, (f) => {
     required(f.bookId, { message: 'Le numéro du livre est obligatoire' });
   });
 
+  // constructor() {
+  //   effect(() => this.bookIdChange.emit(this.draft().bookId.trim()));
+  // }
+
   onSubmit(event: SubmitEvent) {
     event.preventDefault();
-    this.submitted.emit(this.model().bookId.trim());
-    this.model.set({ bookId: '' });
+    this.submitted.emit(this.draft().bookId.trim());
+    this.draft.set({ bookId: '' });
   }
 }
